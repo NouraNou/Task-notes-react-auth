@@ -1,21 +1,39 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { login } from "../api/auth";
+import { useMutation } from "@tanstak/react-query";
+import { Navigate } from "react-router-dom";
+import UserContext from "./context/UserCon";
 
 const Login = () => {
   const [userInfo, setUserInfo] = useState({});
+  const [user, setUser] = useContext(UserContext);
 
-  const handleChange = (e) => {
+  const changeHandler = (e) => {
     setUserInfo((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-  const handleFormSubmit = (e) => {
+
+  const { mutate: loginFn } = useMutation({
+    mutationFn: () => login(useInfo),
+    onSuccess: () => {
+      setUser(true);
+    },
+  });
+
+  const formSubmitHandler = (e) => {
     e.preventDefault();
-    // Add login logic here
+    loginFn();
   };
+
+  if (user) {
+    console.log(` user status ${user}`);
+    return <Navigate to="/" />;
+  }
 
   return (
     <div className="bg-gray-900 min-h-screen flex items-center justify-center absolute inset-0 z-[-1]">
       <div className="max-w-md w-full px-6 py-8 bg-gray-800 rounded-md shadow-md">
         <h2 className="text-3xl text-white font-semibold mb-6">Login</h2>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={formSubmitHandler}>
           <div className="mb-4">
             <label
               htmlFor="email"
@@ -27,7 +45,7 @@ const Login = () => {
               type="email"
               name="email"
               id="email"
-              onChange={handleChange}
+              onChange={changeHandler}
               className="w-full px-4 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -43,7 +61,7 @@ const Login = () => {
               name="password"
               type="password"
               id="password"
-              onChange={handleChange}
+              onChange={changeHandler}
               className="w-full px-4 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />

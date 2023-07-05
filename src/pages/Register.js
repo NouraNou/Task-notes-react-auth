@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { register } from "../api/auth";
+import { useMutation } from "@tanstack/react-query";
 
 const Register = () => {
   const [userInfo, setUserInfo] = useState({});
@@ -11,16 +13,22 @@ const Register = () => {
     }
   };
 
-  const handleFormSubmit = (e) => {
-    // e.preventDefault();
-    // Add register logic here
+  const { mutate: regFn } = useMutation({
+    mutationFn: () => {
+      register(userInfo);
+    },
+  });
+
+  const formSubmitHandler = (e) => {
+    e.preventDefault();
+    regFn();
   };
 
   return (
     <div className="bg-gray-900 min-h-screen flex items-center justify-center absolute inset-0 z-[-1]">
       <div className="max-w-md w-full px-6 py-8 bg-gray-800 rounded-md shadow-md">
         <h2 className="text-3xl text-white font-semibold mb-6">Register</h2>
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={formSubmitHandler}>
           <div className="mb-4">
             <label
               htmlFor="name"
@@ -32,7 +40,7 @@ const Register = () => {
               type="text"
               id="name"
               name="name"
-              onChange={handleChange}
+              onChange={changeHandler}
               className="w-full px-4 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -48,7 +56,7 @@ const Register = () => {
               type="email"
               id="email"
               name="email"
-              onChange={handleChange}
+              onChange={changeHandler}
               className="w-full px-4 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -64,7 +72,7 @@ const Register = () => {
               type="password"
               id="password"
               name="password"
-              onChange={handleChange}
+              onChange={changeHandler}
               className="w-full px-4 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
@@ -80,7 +88,7 @@ const Register = () => {
               type="file"
               id="image"
               name="image"
-              onChange={handleChange}
+              onChange={changeHandler}
               className="w-full px-4 py-2 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
               required
             />
